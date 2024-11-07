@@ -1,156 +1,239 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Happy Birthday, My Love!</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        html, body {
-            overflow-x: hidden;
-            max-width: 100%;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
         body {
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            font-family: 'Arial', sans-serif;
             perspective: 1000px;
-            touch-action: manipulation;
+            overflow: hidden;
+            padding: 20px;
         }
-        .card {
+
+        .falling-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: fixed;
+            font-size: 20px;
+            opacity: 0;
+            will-change: transform;
+            animation: fallHeart var(--fall-duration) linear forwards;
+        }
+
+        .card-container {
+            width: min(90vw, 350px);
+            height: min(80vh, 500px);
+            position: relative;
+            transition: transform 0.8s;
             transform-style: preserve-3d;
-            transition: transform 1s;
-            width: 90vw;
-            max-width: 350px;
-            height: 500px;
             cursor: pointer;
+            z-index: 2;
         }
-        .card:active {
+
+        .card-container.flipped {
             transform: rotateY(180deg);
         }
+
         .card-front, .card-back {
             position: absolute;
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .card-front {
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+            background: rgba(255, 255, 255, 0.95);
+            padding: clamp(1rem, 5vw, 2rem);
+            border-radius: clamp(10px, 3vw, 20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
+
         .card-back {
-            background: #f0f4f8;
             transform: rotateY(180deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            text-align: center;
-            padding: 20px;
+            background: linear-gradient(135deg, #fff0f3, #fff);
         }
-        .heart-animation {
-            animation: pulse 1.5s infinite;
-            max-width: 60vw;
-            height: auto;
+
+        .card-heart {
+            color: #ff4b6e;
+            font-size: clamp(30px, 8vw, 50px);
+            margin-bottom: clamp(10px, 3vw, 20px);
+            animation: pulse 1.5s ease-in-out infinite;
         }
+
+        .title {
+            color: #ff4b6e;
+            font-size: clamp(18px, 5vw, 24px);
+            margin-bottom: clamp(10px, 3vw, 15px);
+            font-weight: bold;
+        }
+
+        .message {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: clamp(10px, 3vw, 20px);
+            font-size: clamp(14px, 4vw, 16px);
+        }
+
+        .signature {
+            color: #ff4b6e;
+            font-style: italic;
+            font-size: clamp(16px, 4vw, 18px);
+            margin-top: clamp(10px, 3vw, 20px);
+        }
+
+        .flip-instruction {
+            position: absolute;
+            bottom: clamp(10px, 3vw, 20px);
+            color: #ff4b6e;
+            font-size: clamp(12px, 3vw, 14px);
+            animation: bounce 2s infinite;
+        }
+
+        .decorative-border {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid #ff4b6e;
+            border-radius: clamp(8px, 2vw, 15px);
+            opacity: 0.3;
+        }
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
         }
-        .confetti {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background-color: #ffd700;
-            top: 0;
-            opacity: 0;
-            z-index: -1;
-            animation: fall 3s linear infinite;
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
+
+        @keyframes fallHeart {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
                 opacity: 1;
             }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
         }
+
         @media (max-width: 480px) {
-            .card {
-                width: 95vw;
-                height: 450px;
-            }
-            .card-front h1 {
-                font-size: 2rem;
-            }
-            .card-front p, .card-back p {
-                font-size: 1rem;
+            .card-container {
+                width: 85vw;
+                height: 70vh;
             }
         }
     </style>
 </head>
 <body>
-    <div class="confetti-container">
-        <!-- Confetti elements will be dynamically added via JavaScript -->
-    </div>
-    
-    <div class="card">
+    <div class="falling-hearts"></div>
+    <div class="card-container">
         <div class="card-front">
-            <h1 class="text-4xl font-bold text-pink-600 mb-4">Happy Birthday!</h1>
-            <img src="https://media.giphy.com/media/bErElGdAHUmoE/giphy.gif?cid=ecf05e47mnnv08y8st90pusjh31ocj4hyo8h1gontql0tiv9&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Heart" width="180" height="180" class="heart-animation mb-4">
-            <p class="text-xl text-gray-700">Tap/Click to see a special message</p>
+            <div class="decorative-border"></div>
+            <div class="card-heart">❤️</div>
+            <div class="title">Tap to Open</div>
+            <div class="message">A special message awaits you...</div>
+            <div class="flip-instruction">Click to reveal ✨</div>
         </div>
         <div class="card-back">
-            <h2 class="text-3xl font-bold text-pink-700 mb-6">My Dearest Love</h2>
-            <p class="text-xl text-gray-800 mb-6">
-                Every moment with you is a gift. 
-                You light up my world in ways 
-                no one else can. 
-                Happy Birthday! ❤️
-            </p>
-            <div class="text-2xl text-red-500 font-bold">
-                I Love You
+            <div class="decorative-border"></div>
+            <div class="card-heart">🎂</div>
+            <div class="title">Happy Birthday, My Love!</div>
+            <div class="message">
+                To the one who makes my heart skip a beat every single day...
+                
+                On your special day, I want you to know that you're the most 
+                amazing person in my world. Your smile brightens my darkest days, 
+                and your love makes every moment magical.
+                
+                May this year bring you endless joy, countless adventures, 
+                and all the love you deserve. 🌟
             </div>
+            <div class="signature">Forever Yours ❤️</div>
         </div>
     </div>
 
     <script>
-        // Prevent double-tap zoom on mobile
-        let lastTap = 0;
-        document.addEventListener('touchstart', (e) => {
-            const now = new Date().getTime();
-            if (now - lastTap <= 500) {
-                e.preventDefault();
-            }
-            lastTap = now;
+        const cardContainer = document.querySelector('.card-container');
+        const fallingHeartsContainer = document.querySelector('.falling-hearts');
+        const hearts = ['❤️', '💖', '💝', '💕', '💗'];
+
+        cardContainer.addEventListener('click', () => {
+            cardContainer.classList.toggle('flipped');
         });
 
-        function createConfetti() {
-            const container = document.querySelector('.confetti-container');
-            const colors = ['#ff6b6b', '#4ecdc4', '#ffd700', '#ff9ff3'];
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.setProperty('--fall-duration', (Math.random() * 3 + 2) + 's');
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
             
-            for(let i = 0; i < 75; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animationDelay = `${Math.random() * 3}s`;
-                confetti.style.width = `${Math.random() * 8 + 4}px`;
-                confetti.style.height = confetti.style.width;
-                
-                container.appendChild(confetti);
-            }
+            fallingHeartsContainer.appendChild(heart);
+            
+            heart.addEventListener('animationend', () => {
+                heart.remove();
+            });
         }
 
-        window.addEventListener('load', createConfetti);
+        // Create hearts periodically
+        setInterval(createHeart, 300);
+
+        // Create initial batch of hearts
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createHeart, i * 100);
+        }
+
+        // Handle touch devices
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        cardContainer.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        cardContainer.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (Math.abs(touchEndX - touchStartX) < 10) { // Detect tap vs swipe
+                cardContainer.classList.toggle('flipped');
+            }
+        });
+
+        // Responsive font size adjustment
+        function adjustFontSizes() {
+            const width = window.innerWidth;
+            document.documentElement.style.setProperty('--base-size', width < 480 ? '14px' : '16px');
+        }
+
+        window.addEventListener('resize', adjustFontSizes);
+        adjustFontSizes();
     </script>
 </body>
 </html>
