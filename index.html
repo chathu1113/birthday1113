@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday, My Love!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+        body {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+            touch-action: manipulation;
+        }
+        .card {
+            transform-style: preserve-3d;
+            transition: transform 1s;
+            width: 90vw;
+            max-width: 350px;
+            height: 500px;
+            cursor: pointer;
+        }
+        .card:active {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .card-front {
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        .card-back {
+            background: #f0f4f8;
+            transform: rotateY(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        .heart-animation {
+            animation: pulse 1.5s infinite;
+            max-width: 60vw;
+            height: auto;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background-color: #ffd700;
+            top: 0;
+            opacity: 0;
+            z-index: -1;
+            animation: fall 3s linear infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 1;
+            }
+        }
+        @media (max-width: 480px) {
+            .card {
+                width: 95vw;
+                height: 450px;
+            }
+            .card-front h1 {
+                font-size: 2rem;
+            }
+            .card-front p, .card-back p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confetti-container">
+        <!-- Confetti elements will be dynamically added via JavaScript -->
+    </div>
+    
+    <div class="card">
+        <div class="card-front">
+            <h1 class="text-4xl font-bold text-pink-600 mb-4">Happy Birthday!</h1>
+            <img src="https://media.giphy.com/media/bErElGdAHUmoE/giphy.gif?cid=ecf05e47mnnv08y8st90pusjh31ocj4hyo8h1gontql0tiv9&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Heart" width="180" height="180" class="heart-animation mb-4">
+            <p class="text-xl text-gray-700">Tap/Click to see a special message</p>
+        </div>
+        <div class="card-back">
+            <h2 class="text-3xl font-bold text-pink-700 mb-6">My Dearest Love</h2>
+            <p class="text-xl text-gray-800 mb-6">
+                Every moment with you is a gift. 
+                You light up my world in ways 
+                no one else can. 
+                Happy Birthday! ❤️
+            </p>
+            <div class="text-2xl text-red-500 font-bold">
+                I Love You
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prevent double-tap zoom on mobile
+        let lastTap = 0;
+        document.addEventListener('touchstart', (e) => {
+            const now = new Date().getTime();
+            if (now - lastTap <= 500) {
+                e.preventDefault();
+            }
+            lastTap = now;
+        });
+
+        function createConfetti() {
+            const container = document.querySelector('.confetti-container');
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffd700', '#ff9ff3'];
+            
+            for(let i = 0; i < 75; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = `${Math.random() * 3}s`;
+                confetti.style.width = `${Math.random() * 8 + 4}px`;
+                confetti.style.height = confetti.style.width;
+                
+                container.appendChild(confetti);
+            }
+        }
+
+        window.addEventListener('load', createConfetti);
+    </script>
+</body>
+</html>
